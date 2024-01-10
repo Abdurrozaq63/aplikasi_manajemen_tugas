@@ -11,7 +11,7 @@ const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "db_std",
+  database: "db_aplikasi_manajemen_tugas",
 });
 
 //membuat koneksi ke database mysql
@@ -43,23 +43,25 @@ app.get("/users", (req, res) => {
 
 app.post("/users", async (req, res) => {
   const { user_id, username, email, password } = req.body;
+  console.log(user_id);
 
   try {
     // Hash password sebelum disimpan
     const hashedPassword = await bcrypt.hash(password, 8);
 
     // Query untuk menyimpan data pengguna ke dalam tabel "users"
-    const query =
-      "INSERT INTO users (user_id, username, email, password) VALUES (?, ?, ?, ?)";
+
     connection.query(
-      query,
+      "INSERT INTO users (user_id, username, email, password) VALUES (?, ?, ?, ?)",
       [user_id, username, email, hashedPassword],
       (err, result) => {
         if (err) {
           console.error("Error creating user:", err);
+          console.log(user_id);
           res.status(500).send("Failed to create user");
           return;
         }
+        console.log(user_id);
         console.log("User created successfully");
         res.status(201).send("User created successfully");
       }
@@ -256,6 +258,8 @@ app.delete("/task-list/:list_id/tasks/:detail_id", (req, res) => {
     }
   );
 });
+
+
 app.listen(port, () => {
   console.log(`Server berjalan di http://localhost:${port}`);
 });
